@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import com.example.androidbootcampodev5.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
-import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
     private lateinit var tasarim : ActivityMainBinding
@@ -14,20 +13,8 @@ class MainActivity : AppCompatActivity() {
         tasarim = ActivityMainBinding.inflate(layoutInflater)
 
         var sonuc = ""
-        var toplam = 0
+        var toplam : Long = 0
         var operatorKullanildi = false
-
-        val rakamlar = ArrayList<Int>()
-        rakamlar.add(1)
-        rakamlar.add(2)
-        rakamlar.add(3)
-        rakamlar.add(4)
-        rakamlar.add(5)
-        rakamlar.add(6)
-        rakamlar.add(7)
-        rakamlar.add(8)
-        rakamlar.add(9)
-        rakamlar.add(0)
 
         tasarim.buttonBir.setOnClickListener   {
             sonuc+="1"
@@ -91,42 +78,49 @@ class MainActivity : AppCompatActivity() {
         }
 
         tasarim.buttonTopla.setOnClickListener {
-            var operator = sonuc.split(" ")
-            Log.e("topla","operator: $operator")
-            if (sonuc == ""){
-                Snackbar.make(it,"Bir Sayı Giriniz ardından operatöre basınız!",Snackbar.LENGTH_SHORT).show()
-            }else if (!operatorKullanildi){
-                sonuc += "+"
-                tasarim.textView.text =sonuc
-                var topla = sonuc.split("+")
-                //Log.e("topla","topla: $topla")
-                for (t in topla){
-                    Log.e("topla","t: $t")
-                    if (t != "")
-                        toplam += t.toInt()
-                }
-                //Log.e("topla","toplam: $toplam")
-                sonuc = "$toplam+"
-                tasarim.textView.text = sonuc
-                operatorKullanildi = true
-                Log.e("topla","sonuc: $sonuc")
-            }else if (operatorKullanildi){
-                Snackbar.make(it,"Bir Sayı Giriniz ardından operatöre basınız!",Snackbar.LENGTH_SHORT).show()
 
-            }
+
+                var operator = sonuc.split(" ")
+                Log.e("topla","operator: $operator")
+                if (sonuc == ""){
+                    Snackbar.make(it,"Bir Sayı Giriniz Ardından Operatöre Basınız!",Snackbar.LENGTH_SHORT).show()
+                }
+                else if (!operatorKullanildi){
+                    sonuc += "+"
+                    tasarim.textView.text =sonuc
+                    try {
+                        var topla = sonuc.split("+")
+                        for (t in topla){
+                            if (t != "")
+                                toplam += t.toLong()
+                        }
+                        sonuc = "$toplam+"
+                        tasarim.textView.text = sonuc
+                        operatorKullanildi = true
+                    }catch (e : Exception){
+                        Snackbar.make(it,"Görünüşe Bakılırsa Bir HATA Var : Sayı Sınırlarını Zorlamayalım :D",Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+                else if (operatorKullanildi){
+                    Snackbar.make(it,"Bir Sayı Giriniz Ardından Operatöre Basınız!",Snackbar.LENGTH_SHORT).show()
+                }
+
         }
 
         tasarim.buttonEsittir.setOnClickListener {
-            var topla = sonuc.split("+")
-            Log.e("topla","topla: $topla")
-            for (t in topla){
-                Log.e("topla","t: $t")
-                if (t != "")
-                    toplam += t.toInt()
+
+            try {
+                var topla = sonuc.split("+")
+                for (t in topla){
+                    if (t != "")
+                        toplam += t.toLong()
+                }
+                tasarim.textView.text = toplam.toString()
+                sonuc = "$toplam+"
+            }catch (e : Exception){
+                Snackbar.make(it,"Görünüşe Bakılırsa Bir HATA Var : Sayı Sınırlarını Zorlamayalım :D",Snackbar.LENGTH_SHORT).show()
             }
-            Log.e("topla","toplam: $toplam")
-            tasarim.textView.text = toplam.toString()
-            sonuc = ""
+
         }
         setContentView(tasarim.root)
     }
